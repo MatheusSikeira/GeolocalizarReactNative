@@ -1,20 +1,64 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { View } from 'react-native';
+import { styles } from './styles';
+import {requestForegroundPermissionsAsync, getCurrentPositionAsync, LocationObject, watchPositionAsync, LocationAccuracy} from 'expo-location';
+import { useEffect, useRef, useState } from 'react';
+import MapView, {Marker} from 'react-native-maps';
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
-}
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+  export default function App(){
+    const mapRef = useRef<MapView>(null)
+    const [location,setLocation] = useState<LocationObject | null>(null);
+
+    async function requestLocationPermissions(){
+      const { granted } = await requestForegroundPermissionsAsync();
+
+      if(granted){
+        const currentPosition = await getCurrentPositionAsync();
+        setLocation(currentPosition);
+
+        console.log("Localização atual: ", currentPosition)
+      }
+    }
+    useEffect(() =>{
+      requestLocationPermissions();
+    },[]);
+    useEffect(() =>{
+      watchPositionAsync({
+        accuracy: LocationAccuracy.Highest,
+        timeInterval: 1000,
+        distanceInterval: 1
+      }, (response) => {
+        console.log("Nova localização: ",response);
+        setLocation(response);
+        mapRef.current?.animateCamera({
+          pitch: 70,
+          center: response.coords
+        })
+      });
+    },[]);
+
+    return(
+      <View style={styles.container}>
+        {
+          location &&
+          <MapView
+          ref= {mapRef}
+          style={styles.map}
+          initialRegion={{
+            latitude: location.coords.latitude,
+            longitude: location.coords.longitude,
+            latitudeDelta: 0.005,
+            longitudeDelta: 0.005,
+          }}>
+
+            <Marker
+            coordinate={{
+              latitude: location.coords.latitude,
+              longitude: location.coords.latitude,
+            }}
+            ></Marker>
+          </MapView>
+        }
+      </View>
+    );
+  }
