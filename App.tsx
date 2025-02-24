@@ -1,4 +1,4 @@
-import { View } from 'react-native';
+import { ScrollView, ScrollViewComponent, View, Text } from 'react-native';
 import { styles } from './styles';
 import {requestForegroundPermissionsAsync, getCurrentPositionAsync, LocationObject, watchPositionAsync, LocationAccuracy} from 'expo-location';
 import { useEffect, useRef, useState } from 'react';
@@ -59,6 +59,20 @@ import MapView, {Marker} from 'react-native-maps';
             ></Marker>
           </MapView>
         }
-      </View>
-    );
+        <ScrollView style={styles.scrollView}>
+        <View style={styles.infoContainer}>
+          <Text style={styles.titulo}>Informações sobre o local</Text>
+          <Text style={styles.descricao}>
+            Aqui você pode adicionar mais detalhes sobre o local, como descrições, horários de funcionamento, etc.
+          </Text>
+          <Text style={styles.descricao}>
+            
+          </Text>
+          <Text style={styles.descricao}>
+           
+          </Text>
+        </View>
+      </ScrollView>
+    </View>      
+        );
   }
