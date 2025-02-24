@@ -59,8 +59,8 @@ import MapView, {Marker} from 'react-native-maps';
             ></Marker>
           </MapView>
         }
-        <ScrollView style={styles.scrollView}>
-        <View style={styles.infoContainer}>
+        <ScrollView style={styles.scrollview}>
+        <View style={styles.infocontainer}>
           <Text style={styles.titulo}>Informações sobre o local</Text>
           <Text style={styles.descricao}>
             Aqui você pode adicionar mais detalhes sobre o local, como descrições, horários de funcionamento, etc.
